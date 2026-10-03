@@ -1,6 +1,6 @@
 #:schema https://pitchfork.jdx.dev/schema.json
 
-# The daemon namespace derives from the directory name, so each jj workspace
+# The daemon namespace derives from the directory name, so each Git worktree
 # (wt switch) gets isolated daemons with its own ports from scripts/setup.ts.
 
 [daemons.dev]

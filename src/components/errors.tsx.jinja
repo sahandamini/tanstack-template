@@ -55,8 +55,7 @@ export function ServerErrorComponent({ {% if sentry %}error, {% endif %}reset }:
 	useEffect(() => {
 		Sentry.captureException(error)
 	}, [error])
-{%- endif %}
-
+{% endif %}
 	return (
 		<div className="flex flex-1 flex-col items-center justify-center px-6 py-24">
 			<Card className="mx-auto max-w-xl text-center">
