@@ -26,11 +26,10 @@ runs; re-run it anytime.
 ## Local URLs
 
 Caddy terminates TLS on the Tailscale IP at 443 and proxies to the pitchfork
-proxy on loopback 9443. URLs are portless: `https://<slug>.lvh.ariaamini.com`
-(`.dev.` aliases `.lvh.`). Worktree slugs flatten to `<app>-<worktree>`, for
-example `<app>-my-task`. Nested hostnames (`worktree.app.lvh…`) and direct
-`:9443` access do not work: the wildcard cert covers one level, and the proxy
-binds loopback only.
+proxy on loopback 9443. URLs are portless: `https://<slug>.lab.sahandamini.dev`.
+Worktree slugs flatten to `<app>-<worktree>`, for example `<app>-my-task`.
+Nested hostnames (`worktree.app.lab…`) and direct `:9443` access do not work:
+the wildcard cert covers one level, and the proxy binds loopback only.
 
 `scripts/setup.ts` registers the workspace slug and writes `BASE_URL`. Never run
 `pitchfork proxy setup` here — it would grab port 443 from the global Caddy TLS
