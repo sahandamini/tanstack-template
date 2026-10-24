@@ -104,42 +104,12 @@ interface WorkspaceInfo {
 
 function detectWorkspace(): WorkspaceInfo {
 	try {
-		const root = realpathSync(run('jj', ['workspace', 'root']))
-
-		const names = run('jj', [
-			'workspace',
-			'list',
-			'-T',
-			'self.name() ++ "\\n"',
-		]).split('\n')
-
-		const branch = names.find((name) => {
-			try {
-				return (
-					realpathSync(run('jj', ['workspace', 'root', '--name', name])) ===
-					root
-				)
-			} catch {
-				return false
-			}
-		})
-
-		if (!branch) throw new Error('Could not identify the current jj workspace')
-
-		return { branch, worktree: basename(root) }
-	} catch (error) {
-		if (error instanceof Error && error.message.startsWith('Could not')) {
-			throw error
-		}
-	}
-
-	try {
 		const root = realpathSync(run('git', ['rev-parse', '--show-toplevel']))
 		const branch = run('git', ['branch', '--show-current']) || basename(root)
 
 		return { branch, worktree: basename(root) }
 	} catch {
-		throw new Error('Run setup from inside a jj workspace or Git worktree')
+		throw new Error('Run setup from inside a Git worktree')
 	}
 }
 
@@ -240,11 +210,17 @@ function readEnvFile(path: string): Record<string, string> {
 	)
 }
 
+// The main worktree is the first entry of `git worktree list`; linked
+// worktrees (Worktrunk) list after it.
 function defaultWorkspaceRoot(): string {
 	try {
-		return realpathSync(run('jj', ['workspace', 'root', '--name', 'default']))
+		const main = run('git', ['worktree', 'list', '--porcelain'])
+			.split('\n')
+			.find((line) => line.startsWith('worktree '))
+
+		return realpathSync(main ? main.slice('worktree '.length) : '.')
 	} catch {
-		// not a jj repo — the current directory is the root
+		// not a Git repo — the current directory is the root
 		return realpathSync('.')
 	}
 }
@@ -294,7 +270,7 @@ function slugify(value: string): string {
 }
 
 // Registers a stable https://<slug>.<tld> URL for the project. Only the
-// default workspace registers; other jj workspaces are reached via
+// main worktree registers; other Git worktrees are reached via
 // https://<workspace>.<slug>.<tld> through `proxy.worktree` auto-discovery.
 // Best effort: pitchfork is a local convenience, never a bootstrap blocker.
 // `proxy trust` needs sudo, so it stays a one-time manual step.
