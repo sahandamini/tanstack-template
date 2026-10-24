@@ -13,7 +13,7 @@ Shared app tooling for aria-amini projects: the Copier app templates and the
 Scaffold an app:
 
 ```bash
-copier copy --trust https://github.com/aria-amini/toolkit <dir>
+copier copy --trust https://github.com/sahandamini/tanstack-template <dir>
 ```
 
 Update an existing app:
@@ -47,3 +47,32 @@ React islands and shadcn components (`base-vega`, Base UI). A site that needs
 routes that run on request adds the Cloudflare adapter itself. The template
 derives its format, markup lint, and layout setup from `~/apps/pc-tune-ups`. It
 uses `vp run check` and `vp run build`.
+
+## Fork
+
+This repo is a fork of
+[aria-amini/tanstack-template](https://github.com/aria-amini/tanstack-template).
+The dotfiles task `mise run app:new` scaffolds both templates from it. Apps use
+the published `@aamini/config` package from npm; this fork never publishes it.
+
+Keep these fork changes when you sync upstream:
+
+- Git replaces Jujutsu. `mise-tasks/internal/workspace.ts` detects Git
+  worktrees, and the copier task runs `git init`. No `.jwlinks.toml`.
+- App URLs use `*.lab.sahandamini.dev`.
+- The `publish` and `preview` workflows run only in the upstream repo.
+
+Sync upstream:
+
+1. Run `git fetch upstream --tags`.
+2. Rebase the fork changes onto `upstream/main`, or merge `upstream/main` into
+   `main`. Keep the fork changes above.
+3. Render each template with all features on and all features off. Run
+   `vp install` and `vp check` in each app.
+4. Tag the result as `<upstream tag>+sahand.<n>`, for example
+   `v0.0.43+sahand.1`. Use the newest upstream template tag (`v*`) that the
+   result contains.
+5. Push `main` and the tag to `origin`. Never push to `upstream`.
+
+Copier uses the newest tag. A `+sahand.<n>` tag sorts after its upstream tag,
+so copier uses the fork release. An untagged commit is not used.
