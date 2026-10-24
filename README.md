@@ -74,5 +74,5 @@ Sync upstream:
    result contains.
 5. Push `main` and the tag to `origin`. Never push to `upstream`.
 
-Copier uses the newest tag. A `+sahand.<n>` tag sorts after its upstream tag,
-so copier uses the fork release. An untagged commit is not used.
+Copier uses the newest tag. A `+sahand.<n>` tag sorts after its upstream tag, so
+copier uses the fork release. An untagged commit is not used.
